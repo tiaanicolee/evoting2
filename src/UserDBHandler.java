@@ -93,7 +93,6 @@ public class UserDBHandler {
 		    String createString =
 			        "CREATE TABLE " + this.tableName + " ( " +
 			        "USERNAME varchar(40) NOT NULL, " +
-			        "PASSWORD varchar(40) NOT NULL, " +
 			        "ROLE varchar(40) NOT NULL," +
 			        "NUMVOTES INTEGER NOT NULL, " +
 			        "ID INTEGER NOT NULL, " +
@@ -140,14 +139,13 @@ public class UserDBHandler {
 			return;
 		}
 		try {
-			String sql = "INSERT INTO " + this.tableName + " VALUES ('Tia Curry', 'pass', 'EO', 0, 1, 0)";
-			this.executeUpdate(conn, sql);
-			sql = "INSERT INTO " + this.tableName + " VALUES ('Joshua Clark', 'pass1', 'EO', 0, 8, 0)";
-			this.executeUpdate(conn, sql);
-			sql = "INSERT INTO " + this.tableName + " VALUES ('Tia Curry', 'pass', 'V', 0, 2, 0)";
-			this.executeUpdate(conn, sql);
-			sql = "INSERT INTO " + this.tableName + " VALUES ('Joshua Clark', 'pass1', 'V', 0, 9, 0)";
-			this.executeUpdate(conn, sql);
+			String sql;
+			
+			for (int i = 0; i < 100; i++)
+			{
+				sql = "INSERT INTO " + this.tableName + " VALUES ('" + getRandomUsername() +"', 'V', 0, " + i +", 0)";
+				this.executeUpdate(conn, sql);
+			}
 			
 		}
 		catch(SQLException e) {
@@ -180,17 +178,17 @@ public class UserDBHandler {
 		return ID;
 	}
 	
-	public boolean correctLogin(String username, String password, String role)
+	public boolean correctLogin(String username, Integer ID, String role)
 	{
 		Connection conn = null;
 		boolean correct = false;
 		try {
 			conn = this.getConnection();
 			System.out.println("Connected to database");
-			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM `registered_users` WHERE `username` = ? AND `password` = ? AND `role` = ?");
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM `registered_users` WHERE `username` = ? AND `id` = ? AND `role` = ?");
 			stmt.setString(1, username);
 			stmt.setString(2, password);
-			stmt.setString(3,  "V");
+			stmt.setInt(3,  ID);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				  correct = true;
@@ -290,6 +288,21 @@ public class UserDBHandler {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public String getRandomUsername()
+	{
+		String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
+
+		java.util.Random rand = new java.util.Random();
+		StringBuilder builder = new StringBuilder();
+	    while(builder.toString().length() == 0) {
+	        int length = rand.nextInt(5)+5;
+	        for(int i = 0; i < length; i++) {
+	            builder.append(lexicon.charAt(rand.nextInt(lexicon.length())));
+	        }
+	    }
+	    return builder.toString();
 	}
 	
 	public int getNumVotersWhoVoted()

@@ -95,7 +95,6 @@ public class VotingWindow extends JFrame {
 		JButton btnNewButton = new JButton("logout");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				voteSystem.ID = 0;
 				dispose(); //Close window
 				getContentPane().setVisible(false); //Hide window
 				VotingWindow open = new VotingWindow(voteSystem);
@@ -121,7 +120,7 @@ public class VotingWindow extends JFrame {
 		panel_3.add(textField_1);
 		textField_1.setColumns(10);
 		
-		JLabel lblPassword = new JLabel("Password");
+		JLabel lblPassword = new JLabel("Voter ID");
 		lblPassword.setBounds(502, 118, 61, 16);
 		panel_3.add(lblPassword);
 		
@@ -129,9 +128,9 @@ public class VotingWindow extends JFrame {
 		btnLoginAsVoter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username = textField.getText();
-				String password = textField_1.getText();
+				Integer id = Integer.valueOf(textField_1.getText());
 				String role = "V";
-				int status = voteSystem.login(username, password, role);
+				int status = voteSystem.login(username, id, role);
 				if (status == 200)
 					tabbedPane.setSelectedComponent(panel);
 				else if (status == 250)
@@ -151,9 +150,9 @@ public class VotingWindow extends JFrame {
 		btnLoginAsElection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username = textField.getText();
-				String password = textField_1.getText();
+				Integer id = Integer.valueOf(textField_1.getText());
 				String role = "EO";
-				int status = voteSystem.login(username, password, role);
+				int status = voteSystem.login(username, id, role);
 				if (status == 200)
 					tabbedPane.setSelectedComponent(panel_4);
 				else if (status == 150)
@@ -291,7 +290,6 @@ public class VotingWindow extends JFrame {
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				voteSystem.voteDB.saveVote(buttonGroup.getSelection().getActionCommand());
-				voteSystem.userDB.setVoteCount(voteSystem.ID);
 				tabbedPane.setSelectedComponent(panel_2);
 			}
 		});
@@ -323,7 +321,6 @@ public class VotingWindow extends JFrame {
 		JButton btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				voteSystem.ID = 0;
 				dispose(); //Close window
 				getContentPane().setVisible(false); //Hide window
 				VotingWindow open = new VotingWindow(voteSystem);

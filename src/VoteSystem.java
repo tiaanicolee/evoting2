@@ -1,7 +1,6 @@
 public class VoteSystem {
 	public UserDBHandler userDB;
 	public VoteDBHandler voteDB;
-	public int ID;
 	
 	public VoteSystem()
 	{
@@ -23,27 +22,27 @@ public class VoteSystem {
 		open.setVisible(true);
 	}
 	
-	public int login(String username, String password, String role)
+	public int login(String username, Integer id, String role)
 	{
 		int status = -100;
-		if ((ID = userDB.findUser(username, role)) > 0)
+		if (userDB.findUser(username, role) > 0)
 		{
-			if (userDB.correctLogin(username, password, role))
+			if (userDB.correctLogin(username, id, role))
 			{
-				if (userDB.getUserNumVotes(ID) == 0 && userDB.getLoginAttempts(ID) < 3)
+				if (userDB.getUserNumVotes(id) == 0 && userDB.getLoginAttempts(id) < 3)
 				{
 					//allow voting
-					userDB.incrementLoginAttempts(ID);
+					userDB.incrementLoginAttempts(id);
 					System.out.println("User can vote");
 					status = 200;
 				}
-				else if (userDB.getUserNumVotes(ID) == 0 && userDB.getLoginAttempts(ID) >= 3)
+				else if (userDB.getUserNumVotes(id) == 0 && userDB.getLoginAttempts(id) >= 3)
 				{
 					//do not allow voting
 					System.out.println("Too many login attempts");
 					status = 50;
 				}
-				else if (userDB.getUserNumVotes(ID) != 0)
+				else if (userDB.getUserNumVotes(id) != 0)
 				{
 					//do not allow voting
 					System.out.println("User already voted once.");
@@ -53,7 +52,7 @@ public class VoteSystem {
 			else
 			{
 				//increment login attempts
-				userDB.incrementLoginAttempts(ID);
+				userDB.incrementLoginAttempts(id);
 				System.out.println("Incorrect login info");
 				status = 150;
 			}
