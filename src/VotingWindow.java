@@ -2,6 +2,9 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class VotingWindow extends JFrame {
 	private JTextField textField;
@@ -56,6 +59,7 @@ public class VotingWindow extends JFrame {
 		JButton btnUnofficialTally = new JButton("Unofficial Tally");
 		btnUnofficialTally.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				 JOptionPane.showMessageDialog(getContentPane(), voteSystem.voteDB.getTally());
 			}
 		});
 		btnUnofficialTally.setBounds(554, 67, 147, 29);
@@ -82,7 +86,7 @@ public class VotingWindow extends JFrame {
 		btnCertifyVotes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String feedback = voteSystem.certifyVotes();
-				JOptionPane.showMessageDialog(getContentPane(), feedback);
+				JOptionPane.showMessageDialog(null, feedback);
 			}
 		});
 		btnCertifyVotes.setBounds(554, 149, 147, 29);

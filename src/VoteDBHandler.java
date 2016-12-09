@@ -145,10 +145,8 @@ public class VoteDBHandler {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			System.out.println("Connected to database");
 			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM '" + this.tableName);
 			ResultSet rs = stmt.executeQuery();
-			System.out.print("Names for query username are :" );
 			while (rs.next()) {
 				  String name = rs.getString("name");
 				  String party = rs.getString("party");
@@ -164,9 +162,25 @@ public class VoteDBHandler {
 		return null;
 	}
 	
-	public HashMap<Candidate, Integer> getTally()
+	public String getTally()
 	{
-		return null;
+		Connection conn = null;
+		String output = "";
+		try {
+			conn = this.getConnection();
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM `" + this.tableName + "`");
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				  String name = rs.getString("name");
+				  output = output + name + ": " + rs.getInt("numvotes") + " ";
+			}   
+	        
+		} catch (SQLException e) {
+			System.out.println("ERROR: Could not connect to the database");
+			e.printStackTrace();
+			return output;
+		}
+		return output;
 	}
 	
 	public int getTotalNumVotes()

@@ -79,9 +79,15 @@ public class VoteSystem {
 		int numVotesSubmitted = voteDB.getTotalNumVotes();
 		
 		System.out.println("The number of people who voted: " + numPeopleWhoVoted);
-		System.out.println("The sum of all votes in final count: " + numVotesSubmitted);
+		System.out.println(" The sum of all votes in final count: " + numVotesSubmitted);
+		String formattedOutput = "The number of people who voted: " + numPeopleWhoVoted + 
+				" The sum of fall votes in final count: " + numVotesSubmitted;
+		if (numPeopleWhoVoted != numVotesSubmitted)
+			formattedOutput =  "The number of people who voted: " + numPeopleWhoVoted + 
+					" The sum of fall votes in final count: " + numVotesSubmitted +
+					" There is a discrepancy in the votes. Please examine recount.txt for manual count and repeated IDs";
 		
-		String formattedOutput = "";
+		
 		
 		return formattedOutput;
 	}
