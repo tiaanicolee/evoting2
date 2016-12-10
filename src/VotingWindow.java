@@ -2,6 +2,9 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -56,7 +59,7 @@ public class VotingWindow extends JFrame {
 		lblNewLabel.setBounds(455, 16, 406, 25);
 		panel_4.add(lblNewLabel);
 		
-		JButton btnUnofficialTally = new JButton("Unofficial Tally");
+		JButton btnUnofficialTally = new JButton("Official Tally");
 		btnUnofficialTally.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				 JOptionPane.showMessageDialog(getContentPane(), voteSystem.voteDB.getTally());
@@ -68,15 +71,34 @@ public class VotingWindow extends JFrame {
 		JButton btnRecount = new JButton("Recount");
 		btnRecount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(getContentPane(), "Every vote is printed anonymously to a file [votes.txt] on the desktop. Please check there for a manual recount.");
+				JOptionPane.showMessageDialog(getContentPane(), "Every vote is printed anonymously to a file 'Recount.txt' in "
+						+ "\nthe home folder. Please check there for a manual recount.");
 			}
 		});
 		btnRecount.setBounds(554, 108, 147, 29);
 		panel_4.add(btnRecount);
 		
-		JButton btnClosePoll = new JButton("Close Poll");
+		JButton btnClosePoll = new JButton("Reset Polls");
 		btnClosePoll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(getContentPane(), "Are you sure you want to erase all \nstored information, including results?");
+				voteSystem.userDB.dropTable();
+				voteSystem.voteDB.dropTable();
+				try{
+					File textFile = new File("Recount.txt");
+					FileWriter fw = new FileWriter(textFile, true);
+					BufferedWriter bw = new BufferedWriter(fw);
+					bw.write("Poll Closed! Votes about this line are from a separate election");
+					bw.newLine();
+					bw.close();
+					fw.close();
+		    	}catch(Exception x){
+		    		x.printStackTrace();
+		    	}
+				dispose(); //Close window
+				getContentPane().setVisible(false); //Hide window
+				String[] args = new String[2];
+				voteSystem.main(args);
 			}
 		});
 		btnClosePoll.setBounds(554, 190, 147, 29);
@@ -104,8 +126,6 @@ public class VotingWindow extends JFrame {
 		btnNewButton.setBounds(578, 268, 102, 29);
 		panel_4.add(btnNewButton);
 		
-		
-		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setBounds(501, 78, 62, 16);
 		panel_3.add(lblUsername);
@@ -120,7 +140,7 @@ public class VotingWindow extends JFrame {
 		panel_3.add(textField_1);
 		textField_1.setColumns(10);
 		
-		JLabel lblPassword = new JLabel("Voter ID");
+		JLabel lblPassword = new JLabel("Voter ID#");
 		lblPassword.setBounds(502, 118, 61, 16);
 		panel_3.add(lblPassword);
 		
@@ -217,48 +237,9 @@ public class VotingWindow extends JFrame {
 		separator_3.setBounds(6, 300, 1247, 12);
 		panel.add(separator_3);
 		
-		JLabel lblSenatorialCandidates = new JLabel("Senatorial Candidates");
-		lblSenatorialCandidates.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblSenatorialCandidates.setBounds(38, 255, 226, 43);
-		panel.add(lblSenatorialCandidates);
-		
-		JRadioButton rdbtnAshKetchum = new JRadioButton("Ash Ketchum");
-		rdbtnAshKetchum.setActionCommand("Ash Ketchum");
-		buttonGroup_1.add(rdbtnAshKetchum);
-		rdbtnAshKetchum.setBounds(101, 323, 141, 23);
-		panel.add(rdbtnAshKetchum);
-		
-		JRadioButton rdbtnMisty = new JRadioButton("Misty");
-		rdbtnMisty.setActionCommand("Misty");
-		buttonGroup_1.add(rdbtnMisty);
-		rdbtnMisty.setBounds(101, 358, 141, 23);
-		panel.add(rdbtnMisty);
-		
-		JRadioButton rdbtnBrock = new JRadioButton("Brock");
-		rdbtnBrock.setActionCommand("Brock");
-		buttonGroup_1.add(rdbtnBrock);
-		rdbtnBrock.setBounds(101, 393, 141, 23);
-		panel.add(rdbtnBrock);
-		
-		JRadioButton rdbtnNurseJoy = new JRadioButton("Nurse Joy");
-		rdbtnNurseJoy.setActionCommand("Nurse Joy");
-		buttonGroup_1.add(rdbtnNurseJoy);
-		rdbtnNurseJoy.setBounds(101, 428, 141, 23);
-		panel.add(rdbtnNurseJoy);
-		
-		JSeparator separator_4 = new JSeparator();
-		separator_4.setForeground(new Color(0, 102, 153));
-		separator_4.setBounds(6, 481, 1247, 12);
-		panel.add(separator_4);
-		
-		
 		final JTextPane textPane = new JTextPane();
 		textPane.setBounds(617, 88, 186, 16);
 		panel_1.add(textPane);
-		
-		final JTextPane textPane_1 = new JTextPane();
-		textPane_1.setBounds(617, 132, 186, 16);
-		panel_1.add(textPane_1);
 		
 		JButton btnSubmitVotes = new JButton("Submit Votes");
 		btnSubmitVotes.addActionListener(new ActionListener() {
@@ -266,7 +247,6 @@ public class VotingWindow extends JFrame {
 				if (buttonGroup.getSelection() != null && buttonGroup.getSelection() != null)
 				{
 					textPane.setText(buttonGroup.getSelection().getActionCommand());
-					textPane_1.setText(buttonGroup_1.getSelection().getActionCommand());
 					tabbedPane.setSelectedComponent(panel_1);
 				}
 				else
@@ -289,7 +269,7 @@ public class VotingWindow extends JFrame {
 		JButton btnConfirm = new JButton("Confirm");
 		btnConfirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				voteSystem.voteDB.saveVote(buttonGroup.getSelection().getActionCommand());
+				voteSystem.submit(buttonGroup.getSelection().getActionCommand());
 				tabbedPane.setSelectedComponent(panel_2);
 			}
 		});
@@ -308,10 +288,6 @@ public class VotingWindow extends JFrame {
 		JLabel lblPresidentialCandidate = new JLabel("Presidential Candidate:");
 		lblPresidentialCandidate.setBounds(448, 88, 145, 16);
 		panel_1.add(lblPresidentialCandidate);
-		
-		JLabel lblSenatorialCandidate = new JLabel("Senatorial Candidate: ");
-		lblSenatorialCandidate.setBounds(448, 132, 145, 16);
-		panel_1.add(lblSenatorialCandidate);
 		
 		JLabel lblThankYouFor = new JLabel("Thank you for voting in the 2016 Election!");
 		lblThankYouFor.setBounds(391, 126, 496, 30);

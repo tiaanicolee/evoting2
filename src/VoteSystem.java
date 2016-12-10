@@ -1,6 +1,7 @@
 public class VoteSystem {
 	public UserDBHandler userDB;
 	public VoteDBHandler voteDB;
+	public Integer ID;
 	
 	public VoteSystem()
 	{
@@ -27,12 +28,11 @@ public class VoteSystem {
 		int status = -100;
 		if (userDB.findUser(username, role) > 0)
 		{
-			if (userDB.correctLogin(username, id, role))
+			if ((ID = userDB.correctLogin(username, id, role)) > 0)
 			{
 				if (userDB.getUserNumVotes(id) == 0 && userDB.getLoginAttempts(id) < 3)
 				{
 					//allow voting
-					userDB.incrementLoginAttempts(id);
 					System.out.println("User can vote");
 					status = 200;
 				}
@@ -67,9 +67,11 @@ public class VoteSystem {
 	
 
 	
-	public void getResults()
+	public void submit(String candName)
 	{
-		
+		userDB.setVoteCount(ID);
+		voteDB.printRecount(candName, ID);
+		voteDB.saveVote(candName);
 	}
 	
 	public String certifyVotes()
@@ -80,10 +82,10 @@ public class VoteSystem {
 		System.out.println("The number of people who voted: " + numPeopleWhoVoted);
 		System.out.println(" The sum of all votes in final count: " + numVotesSubmitted);
 		String formattedOutput = "The number of people who voted: " + numPeopleWhoVoted + 
-				" The sum of fall votes in final count: " + numVotesSubmitted;
+				" The sum of all votes in final count: " + numVotesSubmitted;
 		if (numPeopleWhoVoted != numVotesSubmitted)
 			formattedOutput =  "The number of people who voted: " + numPeopleWhoVoted + 
-					" The sum of fall votes in final count: " + numVotesSubmitted +
+					" The sum of all votes in final count: " + numVotesSubmitted +
 					" There is a discrepancy in the votes. Please examine recount.txt for manual count and repeated IDs";
 		
 		

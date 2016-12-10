@@ -1,5 +1,10 @@
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.Properties;
+
+import javax.crypto.*;
 
 public class UserDBHandler {
 
@@ -21,8 +26,10 @@ public class UserDBHandler {
 	/** The name of the table we are testing with */
 	private final String tableName = "REGISTERED_USERS";
 	
+	private final SecureRandom random;
+	
 	public UserDBHandler() {
-
+		random = new SecureRandom();
 	}
 	
 	
@@ -140,12 +147,24 @@ public class UserDBHandler {
 		}
 		try {
 			String sql;
-			
-			for (int i = 0; i < 100; i++)
+			int i;
+			for (i = 1000; i < 1097; i++)
 			{
 				sql = "INSERT INTO " + this.tableName + " VALUES ('" + getRandomUsername() +"', 'V', 0, " + i +", 0)";
 				this.executeUpdate(conn, sql);
 			}
+			sql = "INSERT INTO " + this.tableName + " VALUES ('HFDGFHC', 'V', 0, " + i++ +", 0)";
+			this.executeUpdate(conn, sql);
+			sql = "INSERT INTO " + this.tableName + " VALUES ('RTYDHSAA', 'V', 0, " + i++ +", 0)";
+			this.executeUpdate(conn, sql);
+			sql = "INSERT INTO " + this.tableName + " VALUES ('sFGHsa', 'V', 0, " + i++ +", 0)";
+			this.executeUpdate(conn, sql);
+			
+			sql = "INSERT INTO " + this.tableName + " VALUES ('Dr. X', 'EO', 0, " + i++ +", 0)";
+			this.executeUpdate(conn, sql);
+			sql = "INSERT INTO " + this.tableName + " VALUES ('CVBNS', 'EO', 0, " + i++ +", 0)";
+			this.executeUpdate(conn, sql);
+			
 			
 		}
 		catch(SQLException e) {
@@ -178,28 +197,28 @@ public class UserDBHandler {
 		return ID;
 	}
 	
-	public boolean correctLogin(String username, Integer ID, String role)
+	public int correctLogin(String username, Integer id, String role)
 	{
 		Connection conn = null;
-		boolean correct = false;
+		int vID = -1;
 		try {
 			conn = this.getConnection();
 			System.out.println("Connected to database");
 			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM `registered_users` WHERE `username` = ? AND `id` = ? AND `role` = ?");
 			stmt.setString(1, username);
-			stmt.setString(2, password);
-			stmt.setInt(3,  ID);
+			stmt.setInt(2, id);
+			stmt.setString(3,  role);
 			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				  correct = true;
+			if (rs.next()) {
+				  vID = rs.getInt("ID");
 			}
 	        
 		} catch (SQLException e) {
 			System.out.println("ERROR: Could not connect to the database or find user");
 			e.printStackTrace();
-			return correct;
+			return -1;
 		}
-		return correct;
+		return vID;
 	}
 	
 	public int getUserNumVotes(int ID)

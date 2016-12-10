@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -233,8 +237,24 @@ public class VoteDBHandler {
 		}
 	}
 	
-	public void getRecount()
+	public void printRecount(String candName, int id)
 	{
+		String fileName = "Recount.txt";
 		
+		CryptWithMD5 en = new CryptWithMD5();
+		
+		String hashedID = en.cryptWithMD5("" + id);
+		
+		try {
+			File textFile = new File(fileName);
+			FileWriter fw = new FileWriter(textFile, true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(hashedID + ": " + candName);
+			bw.newLine();
+			bw.close();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
